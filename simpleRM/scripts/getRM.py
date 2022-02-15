@@ -10,25 +10,49 @@ from astropy.coordinates import SkyCoord, EarthLocation
 import astropy.coordinates
 
 from loguru import logger
+
 fmt = "{name}:{level} - {message}"
 logger.remove()
 logger.add(sys.stderr, level="WARNING", colorize=True, format=fmt)
 
 import simpleRM
 
+
 def main():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument("coord", nargs="+", help="Coordinates to search")
-    parser.add_argument("--start", type=str,required=True,help="Start time (MJD or parsable)")
-    parser.add_argument("--stop", type=str,required=True,help="Stop time (MJD or parsable)")                        
-    parser.add_argument("--interval",default=100,type=float, help="Computation interval [sec]")
-    parser.add_argument("--site",default=None,required=True,type=str,help="Site (see EarthLocation.get_site_names())")
-    parser.add_argument("--outfmt",default="mjd",choices=["mjd","iso"],
-                        help="Output time format")
-    parser.add_argument("--out",default=None,type=str,help="Output file")
-    parser.add_argument("--ionex",default="./IONEXdata",type=str,help="IONEX data destination directory")
+    parser.add_argument(
+        "--start", type=str, required=True, help="Start time (MJD or parsable)"
+    )
+    parser.add_argument(
+        "--stop",
+        type=str,
+        default=None,
+        required=False,
+        help="Stop time (MJD or parsable) [default=only at start time]",
+    )
+    parser.add_argument(
+        "--interval", default=100, type=float, help="Computation interval [sec]"
+    )
+    parser.add_argument(
+        "--site",
+        default=None,
+        required=True,
+        type=str,
+        help="Site (see EarthLocation.get_site_names())",
+    )
+    parser.add_argument(
+        "--outfmt", default="mjd", choices=["mjd", "iso"], help="Output time format"
+    )
+    parser.add_argument("--out", default=None, type=str, help="Output file")
+    parser.add_argument(
+        "--ionex",
+        default="./IONEXdata",
+        type=str,
+        help="IONEX data destination directory",
+    )
 
     parser.add_argument(
         "-v", "--verbosity", default=0, action="count", help="Increase output verbosity"
@@ -57,7 +81,7 @@ def main():
             try:
                 coord = SkyCoord(ra, dec)
             except u.core.UnitsError:
-                coord = SkyCoord(ra, dec, unit=("hour", "deg"))                
+                coord = SkyCoord(ra, dec, unit=("hour", "deg"))
     except ValueError:
         try:
             coord = SkyCoord(ra, dec, unit=("hour", "deg"))
@@ -74,11 +98,11 @@ def main():
     starttime = None
     stoptime = None
     try:
-        starttime = Time(float(args.start), format='mjd')
+        starttime = Time(float(args.start), format="mjd")
     except ValueError:
         starttime = Time(args.start)
     try:
-        stoptime = Time(float(args.stop), format='mjd')
+        stoptime = Time(float(args.stop), format="mjd")
     except ValueError:
         stoptime = Time(args.stop)
 
@@ -88,28 +112,30 @@ def main():
     if stoptime is None:
         logger.error(f"Unable to parse stop time '{args.stop}'")
         sys.exit(1)
-        
-    times, RM = simpleRM.simpleRM(coord,
-                                  starttime,
-                                  stoptime,
-                                  site,
-                                  timestep=args.interval*u.s,
-                                  ionexPath=args.ionex)
+
+    times, RM = simpleRM.simpleRM(
+        coord,
+        starttime,
+        stoptime,
+        site,
+        timestep=args.interval * u.s,
+        ionexPath=args.ionex,
+    )
     if args.out is not None:
-        fout=open(args.out,"w")
+        fout = open(args.out, "w")
     else:
         fout = sys.stdout
 
     if args.outfmt == "mjd":
-        print("# TIME(mjd)\t\tRM (rad/m^2)",file=fout)
+        print("# TIME(mjd)\t\tRM (rad/m^2)", file=fout)
     else:
-        print("# TIME\t\tRM (rad/m^2)",file=fout)        
-    for tm,rm in zip(times,RM):
+        print("# TIME\t\tRM (rad/m^2)", file=fout)
+    for tm, rm in zip(times, RM):
         if args.outfmt == "mjd":
-            print(f"{tm.mjd:.3f}\t\t{rm[0]:.3f}",file=fout)
+            print(f"{tm.mjd:.3f}\t\t{rm[0]:.3f}", file=fout)
         else:
-            print(f"{tm.iso}\t\t{rm[0]:.3f}",file=fout)            
-        
+            print(f"{tm.iso}\t\t{rm[0]:.3f}", file=fout)
+
 
 if __name__ == "__main__":
     main()
