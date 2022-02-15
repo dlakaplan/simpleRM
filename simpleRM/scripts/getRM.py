@@ -4,6 +4,7 @@ import os
 import argparse
 import logging
 import re
+import numpy as np
 from astropy import units as u
 from astropy.time import Time
 from astropy.coordinates import SkyCoord, EarthLocation
@@ -101,10 +102,13 @@ def main():
         starttime = Time(float(args.start), format="mjd")
     except ValueError:
         starttime = Time(args.start)
-    try:
-        stoptime = Time(float(args.stop), format="mjd")
-    except ValueError:
-        stoptime = Time(args.stop)
+    if args.stop is None:
+        stoptime = starttime + args.interval * u.s
+    else:
+        try:
+            stoptime = Time(float(args.stop), format="mjd")
+        except ValueError:
+            stoptime = Time(args.stop)
 
     if starttime is None:
         logger.error(f"Unable to parse start time '{args.start}'")
@@ -126,6 +130,12 @@ def main():
     else:
         fout = sys.stdout
 
+    if args.stop is None:
+        # just the single time
+        RM_out = np.interp(starttime.mjd, times.mjd, RM.flatten())
+        times = [starttime]
+        RM = [[RM_out]]
+        
     if args.outfmt == "mjd":
         print("# TIME(mjd)\t\tRM (rad/m^2)", file=fout)
     else:
