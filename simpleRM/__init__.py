@@ -1,6 +1,5 @@
-import logging
+from loguru import logger
 
-log = logging.getLogger(__name__)
 import RMextract.getRM as gt
 from astropy import units as u, constants as c
 from astropy.time import Time
@@ -35,7 +34,7 @@ def simpleRM(pointing,
                       timerange = [(starttime.mjd*u.d).to_value(u.s), (stoptime.mjd*u.d).to_value(u.s)],
                       stat_positions=[[x.value for x in site.to_geocentric()],])
     if RMdict is None:
-        log.error("No RM results returned")
+        logger.error("No RM results returned")
         return None,None
     RM = RMdict['RM']['st1']
     times = Time(RMdict['times']/3600/24, format='mjd')

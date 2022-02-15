@@ -9,8 +9,10 @@ from astropy.time import Time
 from astropy.coordinates import SkyCoord, EarthLocation
 import astropy.coordinates
 
-logging.basicConfig()
-log = logging.getLogger(__name__)
+from loguru import logger
+fmt = "{name}:{level} - {message}"
+logger.remove()
+logger.add(sys.stderr, level="WARNING", colorize=True, format=fmt)
 
 import simpleRM
 
@@ -33,9 +35,11 @@ def main():
     )
     args = parser.parse_args()
     if args.verbosity == 1:
-        log.setLevel("INFO")
+        logger.remove()
+        logger.add(sys.stderr, level="INFO", colorize=True, format=fmt)
     elif args.verbosity >= 2:
-        log.setLevel("DEBUG")
+        logger.remove()
+        logger.add(sys.stderr, level="DEBUG", colorize=True, format=fmt)
 
     if len(args.coord) == 2:
         ra, dec = args.coord
@@ -58,13 +62,13 @@ def main():
         try:
             coord = SkyCoord(ra, dec, unit=("hour", "deg"))
         except ValueError:
-            log.error("Unable to parse input coordinates '{},{}'".format(ra, dec))
+            logger.error("Unable to parse input coordinates '{},{}'".format(ra, dec))
             sys.exit(1)
 
     try:
         site = EarthLocation.of_site(args.site)
     except astropy.coordinates.errors.UnknownSiteException as e:
-        log.error(e)
+        logger.error(e)
         sys.exit(1)
 
     starttime = None
@@ -79,10 +83,10 @@ def main():
         stoptime = Time(args.stop)
 
     if starttime is None:
-        log.error(f"Unable to parse start time '{args.start}'")
+        logger.error(f"Unable to parse start time '{args.start}'")
         sys.exit(1)
     if stoptime is None:
-        log.error(f"Unable to parse stop time '{args.stop}'")
+        logger.error(f"Unable to parse stop time '{args.stop}'")
         sys.exit(1)
         
     times, RM = simpleRM.simpleRM(coord,
