@@ -135,7 +135,7 @@ def main():
         RM_out = np.interp(starttime.mjd, times.mjd, RM.flatten())
         times = [starttime]
         RM = [[RM_out]]
-        
+
     if args.outfmt == "mjd":
         print("# TIME(mjd)\t\tRM (rad/m^2)", file=fout)
     else:

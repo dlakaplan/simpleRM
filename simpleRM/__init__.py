@@ -3,7 +3,7 @@ from loguru import logger
 import RMextract.getRM as gt
 from astropy import units as u, constants as c
 from astropy.time import Time
-from astropy.coordinates import SkyCoord, EarthLocation
+from astropy.coordinates import SkyCoord, EarthLocation, errors
 
 
 def simpleRM(
@@ -25,6 +25,11 @@ def simpleRM(
     times : `astropy.time.Times`
     RM : `numpy.ndarray`
     """
+
+    logger.debug(f"Computing for:")
+    logger.debug(f"site={site}")
+    logger.debug(f"position={pointing}")
+    logger.debug(f"times={starttime} - {stoptime}")
 
     RMdict = gt.getRM(
         ionexPath=ionexPath,
@@ -62,13 +67,13 @@ def simpleRM_from_psrchive(filename, timestep=100 * u.s, ionexPath="./IONEXdata/
     RM : `numpy.ndarray`
     """
     import pypulse
-    
+
     ar = pypulse.Archive(filename, onlyheader=True)
     pointing = ar.getPulsarCoords()
     telescope = ar.getTelescope()
     try:
         site = EarthLocation.of_site(telescope)
-    except UnknownSiteException:
+    except errors.UnknownSiteException:
         xyz = ar.getTelescopeCoords()
         site = EarthLocation.from_geocentric(*xyz, unit=u.m)
 
