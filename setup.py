@@ -11,6 +11,7 @@ setup(
     entry_points={
         "console_scripts": [
             "getRM=simpleRM.scripts.getRM:main",
+            "getRM_psrfits=simpleRM.scripts.getRM_psrfits:main",
         ],
     },
     python_requires=">=3.7",

@@ -23,7 +23,7 @@ def main():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    parser.add_argument("coord", nargs="+", help="Coordinates to search")
+    parser.add_argument("coord", nargs="+", help="Coordinates for computation")
     parser.add_argument(
         "--start", type=str, required=True, help="Start time (MJD or parsable)"
     )

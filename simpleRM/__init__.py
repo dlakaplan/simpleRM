@@ -61,7 +61,8 @@ def simpleRM_from_psrchive(filename, timestep=100 * u.s, ionexPath="./IONEXdata/
     times : `astropy.time.Times`
     RM : `numpy.ndarray`
     """
-
+    import pypulse
+    
     ar = pypulse.Archive(filename, onlyheader=True)
     pointing = ar.getPulsarCoords()
     telescope = ar.getTelescope()
