@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name="simpleRM",
     version="0.1.0",
-    description="Simple Rotation Measure calculations, wrapping around RMExtract"
+    description="Simple Rotation Measure calculations, wrapping around RMExtract",
     author="David Kaplan",
     author_email="kaplan@uwm.edu",
     url="",
