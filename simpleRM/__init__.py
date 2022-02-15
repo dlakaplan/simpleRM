@@ -1,6 +1,6 @@
 import logging
 
-log = logging.getLogger()
+log = logging.getLogger(__name__)
 import RMextract.getRM as gt
 from astropy import units as u, constants as c
 from astropy.time import Time

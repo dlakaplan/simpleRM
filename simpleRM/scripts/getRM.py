@@ -10,10 +10,7 @@ from astropy.coordinates import SkyCoord, EarthLocation
 import astropy.coordinates
 
 logging.basicConfig()
-log = logging.getLogger()
-
-from RMextract import PosTools
-from RMextract import getIONEX as ionex
+log = logging.getLogger(__name__)
 
 import simpleRM
 
