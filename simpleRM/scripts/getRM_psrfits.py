@@ -16,7 +16,7 @@ fmt = "{name}:{level} - {message}"
 logger.remove()
 logger.add(sys.stderr, level="WARNING", colorize=True, format=fmt)
 
-import simpleRM
+from simpleRM import simpleRM
 
 
 def main():
