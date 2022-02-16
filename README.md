@@ -39,12 +39,6 @@ RMextract.getIONEX:WARNING - function readTEC obsolete, use read_tec instead
 ```
 
 ```
-(rm) kaplan@plock[~/pythonpackages/simpleRM] (main) % getRM --start 59001  --site GBT 01:23:45 +56:12:34           
-RMextract.PosTools:WARNING - We will need PyEphem to perform calculations! the accuracy of results might decrease a bit
-RMextract.getIONEX:WARNING - function readTEC obsolete, use read_tec instead
-RMextract.getIONEX:WARNING - function readTEC obsolete, use read_tec instead
-# TIME(mjd)		RM (rad/m^2)
-59001.000		0.398
 (rm) kaplan@plock[~/pythonpackages/simpleRM] (main) % getRM_psrfits ~/askap/lmc/uwl_220122_151118.calib.paz1.SF32b4
 RMextract.PosTools:WARNING - We will need PyEphem to perform calculations! the accuracy of results might decrease a bit
 Loading (header only): /Users/kaplan/askap/lmc/uwl_220122_151118.calib.paz1.SF32b4
