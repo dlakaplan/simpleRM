@@ -51,7 +51,7 @@ def simpleRM(
     return times, RM
 
 
-def simpleRM_from_psrchive(filename, timestep=100 * u.s, ionexPath="./IONEXdata/"):
+def simpleRM_from_psrfits(filename, timestep=100 * u.s, ionexPath="./IONEXdata/"):
     """Compute RM for a single position/site and a range of times based on a PSRFITS file
 
     Parameters
@@ -79,6 +79,38 @@ def simpleRM_from_psrchive(filename, timestep=100 * u.s, ionexPath="./IONEXdata/
 
     starttime = Time(ar.getMJD(full=True), format="mjd")
     stoptime = starttime + ar.getDuration() * u.s
+    return simpleRM(
+        pointing, starttime, stoptime, site, timestep=timestep, ionexPath=ionexPath
+    )
+
+def simpleRM_from_psrchive(filename, timestep=100 * u.s, ionexPath="./IONEXdata/"):
+    """Compute RM for a single position/site and a range of times based on a PSRCHIVE file
+
+    Parameters
+    ----------
+    filename : str
+        PSRCHIVE Timer file to read
+    timestep : `astropy.units.Quantity`, optional
+    ionexPath : str, optional
+
+    Returns
+    -------
+    times : `astropy.time.Times`
+    RM : `numpy.ndarray`
+    """
+    from . import read_Timer
+
+    t  = read_Timer.TimerHeader(filename)
+    pointing = t.position
+    telescope = t.telescope
+    try:
+        site = EarthLocation.of_site(telescope)
+    except errors.UnknownSiteException:
+        logger.error(f"Unknown site '{telescope}'")
+        return None
+
+    starttime = t.mjd
+    stoptime = starttime + t.duration
     return simpleRM(
         pointing, starttime, stoptime, site, timestep=timestep, ionexPath=ionexPath
     )

@@ -12,7 +12,8 @@ setup(
         "console_scripts": [
             "getRM=simpleRM.scripts.getRM:main",
             "getRM_psrfits=simpleRM.scripts.getRM_psrfits:main",
-        ],
+            "getRM_psrchive=simpleRM.scripts.getRM_psrchive:main",
+      ],
     },
     python_requires=">=3.7",
     include_package_data=True,

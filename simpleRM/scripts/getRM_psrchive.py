@@ -23,7 +23,7 @@ def main():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    parser.add_argument("file", help="PSRFITS file to process")
+    parser.add_argument("file", help="PSRCHIVE Timer file to process")
     parser.add_argument(
         "--interval", default=100, type=float, help="Computation interval [sec]"
     )
@@ -49,7 +49,7 @@ def main():
         logger.remove()
         logger.add(sys.stderr, level="DEBUG", colorize=True, format=fmt)
 
-    times, RM = simpleRM.simpleRM_from_psrfits(
+    times, RM = simpleRM.simpleRM_from_psrchive(
         args.file,
         timestep=args.interval * u.s,
         ionexPath=args.ionex,
