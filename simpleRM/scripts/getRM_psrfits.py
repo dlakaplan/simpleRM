@@ -12,7 +12,7 @@ import astropy.coordinates
 
 from loguru import logger
 
-fmt = "{name}:{level} - {message}"
+fmt = "{name}:{level} - <level>{message}</level>"
 logger.remove()
 logger.add(sys.stderr, level="WARNING", colorize=True, format=fmt)
 
