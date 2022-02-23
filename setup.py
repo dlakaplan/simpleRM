@@ -13,9 +13,11 @@ setup(
             "getRM=simpleRM.scripts.getRM:main",
             "getRM_psrfits=simpleRM.scripts.getRM_psrfits:main",
             "getRM_psrchive=simpleRM.scripts.getRM_psrchive:main",
-      ],
+        ],
     },
+    install_requires=["astropy", "pyephem", "loguru", "scipy"],
     python_requires=">=3.7",
+    package_data={"simpleRM": ["data/*.*"]},
     include_package_data=True,
     zip_safe=False,
 )

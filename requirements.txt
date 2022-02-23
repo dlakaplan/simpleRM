@@ -1,4 +1,6 @@
 astropy
 pyephem
 loguru
+scipy
+numpy
 
