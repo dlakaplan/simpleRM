@@ -30,39 +30,7 @@ class TimerHeader:
     """
 
     def __init__(self, filename):
-        fh = open(
-            os.path.join(pkg_resources.resource_filename(__name__, "data/"), "timer.h"),
-            "r",
-        )
-        lines = stripcomments("".join(fh.readlines())).split("\n")
-
-        keywords = {}
-
-        chararray_lengths = {}
-        for line in lines:
-            if line.startswith("#define"):
-                if len(line.split()) == 3:
-                    try:
-                        chararray_lengths[line.split()[1]] = int(line.split()[2])
-                    except ValueError:
-                        # not a char array
-                        pass
-        for line in lines:
-            if line.startswith("//") or line.startswith("#"):
-                continue
-            if len(line.strip()) == 0:
-                continue
-            try:
-                vartype, varname = line.split(";")[0].split()
-            except:
-                # assume still a comment?
-                continue
-            if vartype == "char":
-                length = chararray_lengths[varname.split("[")[1].replace("]", "")]
-                varname = varname.split("[")[0]
-            else:
-                length = data_lengths[vartype]
-            keywords[varname] = [vartype, length]
+        keywords = self.__class__.get_definition()
 
         f = open(filename, "rb")
         for varname in keywords:
@@ -104,3 +72,51 @@ class TimerHeader:
         )
         self.telescope = self.keywords["telid"][-1]
         self.psrname = self.keywords["psrname"][-1]
+
+    @staticmethod
+    def get_definition():
+        """get Timer file header definition
+        
+        Returns
+        -------
+        keywords : dict
+        dictionary of keywords with each entry being [`type`, `size`]
+        """
+
+        fh = open(
+            os.path.join(pkg_resources.resource_filename(__name__, "data/"), "timer.h"),
+            "r",
+        )
+
+        lines = stripcomments("".join(fh.readlines())).split("\n")
+
+        keywords = {}
+
+        # first extract the lengths of the different char[] variables
+        chararray_lengths = {}
+        for line in lines:
+            if line.startswith("#define"):
+                if len(line.split()) == 3:
+                    try:
+                        chararray_lengths[line.split()[1]] = int(line.split()[2])
+                    except ValueError:
+                        # not a char array
+                        pass
+        # now parse the rest
+        for line in lines:
+            if line.startswith("//") or line.startswith("#"):
+                continue
+            if len(line.strip()) == 0:
+                continue
+            try:
+                vartype, varname = line.split(";")[0].split()
+            except:
+                # assume still a comment?
+                continue
+            if vartype == "char":
+                length = chararray_lengths[varname.split("[")[1].replace("]", "")]
+                varname = varname.split("[")[0]
+            else:
+                length = data_lengths[vartype]
+            keywords[varname] = [vartype, length]
+        return keywords
