@@ -1,9 +1,10 @@
 # simpleRM
 
 * Basic ionospheric RM calculations using [`RMextract`](https://github.com/lofar-astron/RMextract) for a single position and a range of times.  
-* Position/time/observatory info can be given explicitly, or extracted from `PSRFITS` or `PSRCHIVE/Timer` files
+* Position/time/observatory info can be given explicitly, or extracted from [`PSRFITS`](https://www.atnf.csiro.au/research/pulsar/psrfits_definition/Psrfits.html) or [`PSRCHIVE/Timer`](http://psrchive.sourceforge.net) files
 * Requires `RMextract`, but best to install with `--no-deps` so it doesn't try to pull in `casacore`
 * Other requirements: `astropy`, `numpy`, `scipy`, `loguru`, `pyephem`
+* For `PSRFITS`, requires [`pypulse`](https://github.com/mtlam/PyPulse)
 
 ## Core functionality
 ```python
