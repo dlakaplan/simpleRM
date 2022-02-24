@@ -29,8 +29,12 @@ class TimerHeader:
     position
     """
 
+    keywords = None
+
     def __init__(self, filename):
-        keywords = self.__class__.get_definition()
+        if TimerHeader.keywords is None:
+            TimerHeader.keywords = self.__class__.get_definition()
+        keywords = TimerHeader.keywords
 
         f = open(filename, "rb")
         for varname in keywords:
