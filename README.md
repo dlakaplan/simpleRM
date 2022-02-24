@@ -34,7 +34,7 @@ times, RM = simpleRM.simpleRM(coord,
     """
 ```
 
-## Provide info explicitly (uses `astropy` for site info)
+## Provide info explicitly (uses [`astropy` data repo](http://www.astropy.org/astropy-data/) for site info)
 ```
 (rm) kaplan@plock[~/pythonpackages/simpleRM] (main) % getRM --start 59001  --site GBT 01:23:45 +56:12:34           
 RMextract.PosTools:WARNING - We will need PyEphem to perform calculations! the accuracy of results might decrease a bit
