@@ -28,6 +28,24 @@ def main():
         "--interval", default=100, type=float, help="Computation interval [sec]"
     )
     parser.add_argument(
+        "--start",
+        default=False,
+        action="store_true",
+        help="Only return value for start time of file",
+    )
+    parser.add_argument(
+        "--stop",
+        default=False,
+        action="store_true",
+        help="Only return value for stop time of file",
+    )
+    parser.add_argument(
+        "--mid",
+        default=False,
+        action="store_true",
+        help="Only return value for midpoint time of file",
+    )
+    parser.add_argument(
         "--outfmt", default="mjd", choices=["mjd", "iso"], help="Output time format"
     )
     parser.add_argument("--out", default=None, type=str, help="Output file")
@@ -49,11 +67,32 @@ def main():
         logger.remove()
         logger.add(sys.stderr, level="DEBUG", colorize=True, format=fmt)
 
-    times, RM = simpleRM.simpleRM_from_psrfits(
-        args.file,
-        timestep=args.interval * u.s,
-        ionexPath=args.ionex,
+    times, RM, header = simpleRM.simpleRM_from_psrfits(
+        args.file, timestep=args.interval * u.s, ionexPath=args.ionex,
     )
+    starttime = Time(header.getMJD(full=True), format="mjd")
+    stoptime = starttime + header.getDuration() * u.s
+
+    if args.start:
+        logger.debug("Returning RM for start only")
+        # just the single time
+        RM_out = np.interp(starttime.mjd, times.mjd, RM.flatten())
+        times = [starttime]
+        RM = [[RM_out]]
+    elif args.stop:
+        logger.debug("Returning RM for stop only")
+        # just the single time
+        RM_out = np.interp(stoptime.mjd, times.mjd, RM.flatten())
+        times = [stoptime]
+        RM = [[RM_out]]
+    elif args.mid:
+        logger.debug("Returning RM for midpoint only")
+        midpoint = starttime + header.getDuration() * u.s / 2
+        # just the single time
+        RM_out = np.interp(midpoint.mjd, times.mjd, RM.flatten())
+        times = [midpoint]
+        RM = [[RM_out]]
+
     if args.out is not None:
         fout = open(args.out, "w")
     else:

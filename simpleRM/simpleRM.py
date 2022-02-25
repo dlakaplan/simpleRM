@@ -39,9 +39,7 @@ def simpleRM(
             (starttime.mjd * u.d).to_value(u.s),
             (stoptime.mjd * u.d).to_value(u.s),
         ],
-        stat_positions=[
-            [x.value for x in site.to_geocentric()],
-        ],
+        stat_positions=[[x.value for x in site.to_geocentric()],],
     )
     if RMdict is None:
         logger.error("No RM results returned")
@@ -65,9 +63,11 @@ def simpleRM_from_psrfits(filename, timestep=100 * u.s, ionexPath="./IONEXdata/"
     -------
     times : `astropy.time.Times`
     RM : `numpy.ndarray`
+    ar : `pypulse` archive
     """
     import pypulse
 
+    logger.debug(f"Reading PSRFITS file {filename}")
     ar = pypulse.Archive(filename, onlyheader=True)
     pointing = ar.getPulsarCoords()
     telescope = ar.getTelescope()
@@ -79,9 +79,10 @@ def simpleRM_from_psrfits(filename, timestep=100 * u.s, ionexPath="./IONEXdata/"
 
     starttime = Time(ar.getMJD(full=True), format="mjd")
     stoptime = starttime + ar.getDuration() * u.s
-    return simpleRM(
+    return (*simpleRM(
         pointing, starttime, stoptime, site, timestep=timestep, ionexPath=ionexPath
-    )
+    ),ar)
+
 
 def simpleRM_from_psrchive(filename, timestep=100 * u.s, ionexPath="./IONEXdata/"):
     """Compute RM for a single position/site and a range of times based on a PSRCHIVE file
@@ -97,10 +98,12 @@ def simpleRM_from_psrchive(filename, timestep=100 * u.s, ionexPath="./IONEXdata/
     -------
     times : `astropy.time.Times`
     RM : `numpy.ndarray`
+    header : `read_Timer.TimerHeader`
     """
     from . import read_Timer
 
-    t  = read_Timer.TimerHeader(filename)
+    logger.debug(f"Reading Timer file {filename}")
+    t = read_Timer.TimerHeader(filename)
     pointing = t.position
     telescope = t.telescope
     try:
@@ -111,6 +114,9 @@ def simpleRM_from_psrchive(filename, timestep=100 * u.s, ionexPath="./IONEXdata/
 
     starttime = t.mjd
     stoptime = starttime + t.duration
-    return simpleRM(
-        pointing, starttime, stoptime, site, timestep=timestep, ionexPath=ionexPath
+    return (
+        *simpleRM(
+            pointing, starttime, stoptime, site, timestep=timestep, ionexPath=ionexPath
+        ),
+        t,
     )

@@ -6,6 +6,8 @@ import re
 import pkg_resources
 import os
 
+from loguru import logger
+
 data_lengths = {"int": 4, "float": 4, "double": 8, "uint32_t": 32}
 
 
@@ -76,6 +78,10 @@ class TimerHeader:
         )
         self.telescope = self.keywords["telid"][-1]
         self.psrname = self.keywords["psrname"][-1]
+        logger.debug(f"Telescope = {self.telescope}")
+        logger.debug(f"Pulsar = {self.psrname}")
+        logger.debug(f"Start = {self.mjd.mjd} = {self.mjd.iso}")
+        logger.debug(f"Duration = {self.duration}")
 
     @staticmethod
     def get_definition():
