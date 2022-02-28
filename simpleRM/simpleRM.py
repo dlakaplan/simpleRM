@@ -100,7 +100,7 @@ def simpleRM_from_psrchive(filename, timestep=100 * u.s, ionexPath="./IONEXdata/
     RM : `numpy.ndarray`
     header : `read_Timer.TimerHeader`
     """
-    from . import read_Timer
+    import read_Timer
 
     logger.debug(f"Reading Timer file {filename}")
     t = read_Timer.TimerHeader(filename)

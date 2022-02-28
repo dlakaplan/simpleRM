@@ -17,7 +17,7 @@ setup(
     },
     install_requires=["astropy", "pyephem", "loguru", "scipy"],
     python_requires=">=3.7",
-    package_data={"simpleRM": ["data/*.*"]},
-    include_package_data=True,
+    #package_data={"simpleRM": ["data/*.*"]},
+    #include_package_data=True,
     zip_safe=False,
 )
