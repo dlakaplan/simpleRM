@@ -5,6 +5,7 @@
 * Requires `RMextract`, but best to install with `--no-deps` so it doesn't try to pull in `casacore`
 * Other requirements: `astropy`, `numpy`, `scipy`, `loguru`, `pyephem`
 * For `PSRFITS`, requires [`pypulse`](https://github.com/mtlam/PyPulse)
+* For `PSRCHIVE`, requires [`read_Timer`](https://github.com/dlakaplan/read_Timer)
 
 ## Core functionality
 ```python
