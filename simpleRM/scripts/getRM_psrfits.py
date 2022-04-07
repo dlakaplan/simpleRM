@@ -55,6 +55,12 @@ def main():
         type=str,
         help="IONEX data destination directory",
     )
+    parser.add_argument(
+        "--server",
+        default="http://ftp.aiub.unibe.ch/CODE/",
+        type=str,
+        help="IONEX server",
+    )
 
     parser.add_argument(
         "-v", "--verbosity", default=0, action="count", help="Increase output verbosity"
@@ -68,7 +74,10 @@ def main():
         logger.add(sys.stderr, level="DEBUG", colorize=True, format=fmt)
 
     times, RM, header = simpleRM.simpleRM_from_psrfits(
-        args.file, timestep=args.interval * u.s, ionexPath=args.ionex,
+        args.file,
+        timestep=args.interval * u.s,
+        ionexPath=args.ionex,
+        server=args.server,
     )
     starttime = Time(header.getMJD(full=True), format="mjd")
     stoptime = starttime + header.getDuration() * u.s

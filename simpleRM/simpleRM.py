@@ -7,7 +7,13 @@ from astropy.coordinates import SkyCoord, EarthLocation, errors
 
 
 def simpleRM(
-    pointing, starttime, stoptime, site, timestep=100 * u.s, ionexPath="./IONEXdata/"
+    pointing,
+    starttime,
+    stoptime,
+    site,
+    timestep=100 * u.s,
+    ionexPath="./IONEXdata/",
+    server="http://ftp.aiub.unibe.ch/CODE/",
 ):
     """Compute RM for a single position/site and a range of times
 
@@ -19,6 +25,7 @@ def simpleRM(
     site : `astropy.coordinates.EarthLocation`
     timestep : `astropy.units.Quantity`, optional
     ionexPath : str, optional
+    server : str, optional
 
     Returns
     -------
@@ -32,6 +39,7 @@ def simpleRM(
     logger.debug(f"times={starttime} - {stoptime}")
 
     RMdict = gt.getRM(
+        server=server,
         ionexPath=ionexPath,
         radec=[pointing.ra.rad, pointing.dec.rad],
         timestep=timestep.to_value(u.s),
@@ -49,7 +57,12 @@ def simpleRM(
     return times, RM
 
 
-def simpleRM_from_psrfits(filename, timestep=100 * u.s, ionexPath="./IONEXdata/"):
+def simpleRM_from_psrfits(
+    filename,
+    timestep=100 * u.s,
+    ionexPath="./IONEXdata/",
+    server="http://ftp.aiub.unibe.ch/CODE/",
+):
     """Compute RM for a single position/site and a range of times based on a PSRFITS file
 
     Parameters
@@ -58,6 +71,7 @@ def simpleRM_from_psrfits(filename, timestep=100 * u.s, ionexPath="./IONEXdata/"
         PSRFITS file to read
     timestep : `astropy.units.Quantity`, optional
     ionexPath : str, optional
+    server : str, optional
 
     Returns
     -------
@@ -79,12 +93,20 @@ def simpleRM_from_psrfits(filename, timestep=100 * u.s, ionexPath="./IONEXdata/"
 
     starttime = Time(ar.getMJD(full=True), format="mjd")
     stoptime = starttime + ar.getDuration() * u.s
-    return (*simpleRM(
-        pointing, starttime, stoptime, site, timestep=timestep, ionexPath=ionexPath
-    ),ar)
+    return (
+        *simpleRM(
+            pointing, starttime, stoptime, site, timestep=timestep, ionexPath=ionexPath
+        ),
+        ar,
+    )
 
 
-def simpleRM_from_psrchive(filename, timestep=100 * u.s, ionexPath="./IONEXdata/"):
+def simpleRM_from_psrchive(
+    filename,
+    timestep=100 * u.s,
+    ionexPath="./IONEXdata/",
+    server="http://ftp.aiub.unibe.ch/CODE/",
+):
     """Compute RM for a single position/site and a range of times based on a PSRCHIVE file
 
     Parameters
@@ -93,6 +115,7 @@ def simpleRM_from_psrchive(filename, timestep=100 * u.s, ionexPath="./IONEXdata/
         PSRCHIVE Timer file to read
     timestep : `astropy.units.Quantity`, optional
     ionexPath : str, optional
+    server : str, optional
 
     Returns
     -------

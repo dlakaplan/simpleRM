@@ -48,6 +48,12 @@ def main():
         type=str,
         help="IONEX data destination directory",
     )
+   parser.add_argument(
+        "--server",
+        default="http://ftp.aiub.unibe.ch/CODE/",
+        type=str,
+        help="IONEX server",
+    )
 
     parser.add_argument(
         "-v", "--verbosity", default=0, action="count", help="Increase output verbosity"
@@ -64,6 +70,7 @@ def main():
         args.file,
         timestep=args.interval * u.s,
         ionexPath=args.ionex,
+        server=args.server,
     )
     if args.out is not None:
         fout = open(args.out, "w")
